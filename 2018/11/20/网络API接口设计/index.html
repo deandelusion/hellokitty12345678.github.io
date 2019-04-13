@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content>
+    <meta name="keyword" content>
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-person-128.png">
+    <link rel="alternate" type="application/atom+xml" title="骆昊的技术专栏" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        网络API接口设计｜undefined
+        
+    </title>
+
+    <link rel="canonical" href="http://yoursite.com/2018/11/20/网络API接口设计/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost="true" data-istags="false
+" data-ishome="false">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    骆昊的技术专栏
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img" src>
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>网络API接口设计</h1>
+                    
+                    <span class="meta">
+                         作者 骆昊
+                        <span>
+                          日期 2018-11-20
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#RESTful" title="RESTful">RESTful</a>
+                        
+                        <a class="tag" href="/tags/#API接口" title="API接口">API接口</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            网络API接口设计
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <h2 id="网络API接口设计"><a href="#网络API接口设计" class="headerlink" title="网络API接口设计"></a>网络API接口设计</h2><p>手机App以及使用了Ajax技术或做了前后端分离的页面都需要通过网络API（Application Programming Interface）和后台进行交互，所谓API，指的应用程序的编程接口；而网络API通畅指的是基于HTTP或HTTPS协议的一个URL（统一资源定位符），通过这个URL我们可以让服务器对某个资源进行操作并返回操作的结果。基于HTTP(S)协议最大的好处就在于访问起来非常的简单方便，而且没有编程语言和应用环境上的差别。</p>
+<a id="more"></a>
+<h3 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h3><h4 id="关键问题"><a href="#关键问题" class="headerlink" title="关键问题"></a>关键问题</h4><p>为移动端或者PC端设计网络API接口一个非常重要的原则是：根据业务实体而不是用户界面或操作来设计。如果API接口的设计是根据用户的操作或者界面上的功能设置来设计，随着需求的变更，用户界面也会进行调整，需要的数据也在发生变化，那么后端开发者就要不停的调整API，或者给一个API设计出多个版本，这些都会使项目的开发和维护成本增加。</p>
+<p>下面是某个网站开放API的接口，可以看出API的设计是围绕业务实体来进行的，而且都做到了“见名知意”。</p>
+<table>
+<thead>
+<tr>
+<th>评论</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>comments/show</td>
+<td>获取某条微博的评论列表</td>
+</tr>
+<tr>
+<td>comments/by_me</td>
+<td>自己的评论列表</td>
+</tr>
+<tr>
+<td>comments/to_me</td>
+<td>收到的评论列表</td>
+</tr>
+<tr>
+<td>comments/mentions</td>
+<td>@了自己的评论列表</td>
+</tr>
+<tr>
+<td>comments/create</td>
+<td>创建一条评论</td>
+</tr>
+<tr>
+<td>comments/destroy</td>
+<td>删除一条评论</td>
+</tr>
+<tr>
+<td>comments/reply</td>
+<td>回复一条评论</td>
+</tr>
+</tbody>
+</table>
+<p>注意：上面的API接口并不是REST风格的，关于REST的知识，可以阅读阮一峰老师的<a href="http://www.ruanyifeng.com/blog/2011/09/restful.html" target="_blank" rel="noopener">《理解RESTful架构》</a>以及<a href="http://www.ruanyifeng.com/blog/2014/05/restful_api.html" target="_blank" rel="noopener">《RESTful API设计指南》</a>。</p>
+<p>API接口返回的数据通常都是JSON或XML格式，我们这里不讨论后者。对于JSON格式的数据，我们需要做到不要返回null这的值，因为这样的值一旦处置失当，会给移动端的开发带来麻烦（移动端可能使用强类型语言）。要解决这个问题可以从源头入手，在设计数据库的时候，尽量给每个字段都加上“not null”约束或者设置合理的默认值约束。</p>
+<h4 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h4><ol>
+<li>更新提示问题：设计一个每次使用系统首先要访问的API，该API会向移动端返回系统更新的相关信息，这样就可以提升用户更新App了。</li>
+<li>版本升级问题：API版本升级时应该考虑对低版本的兼容，同时要让新版本和旧版本都能够被访问，可以在URL中包含版本信息或者在将版本号放在HTTP(S)协议头部，关于这个问题有很多的争论，有兴趣的可以看看<a href="https://stackoverflow.com/questions/972226/how-to-version-rest-uris" target="_blank" rel="noopener">stack overflow</a>上面对这个问题的讨论。</li>
+<li>图片尺寸问题：移动端对于一张图片可能需要不同的尺寸，可以在获取图片时传入尺寸参数并获取对应的资源；更好的做法是直接使用云存储或CDN（直接提供了图片缩放的功能），这样可以加速对资源的访问。</li>
+</ol>
+<h3 id="文档撰写"><a href="#文档撰写" class="headerlink" title="文档撰写"></a>文档撰写</h3><p>下面以设计评论接口为例，简单说明接口文档应该如何撰写。</p>
+<h4 id="评论接口"><a href="#评论接口" class="headerlink" title="评论接口"></a>评论接口</h4><p>全局返回状态码</p>
+<table>
+<thead>
+<tr>
+<th>返回码</th>
+<th>返回信息</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10000</td>
+<td>获取评论成功</td>
+<td></td>
+</tr>
+<tr>
+<td>10001</td>
+<td>创建评论成功</td>
+<td></td>
+</tr>
+<tr>
+<td>10002</td>
+<td>无法创建评论</td>
+<td>创建评论时因违反审核机制而无法创建</td>
+</tr>
+<tr>
+<td>10003</td>
+<td>评论已被删除</td>
+<td>查看评论时评论因不和谐因素已被删除</td>
+</tr>
+<tr>
+<td>10004</td>
+<td>……</td>
+<td>……</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li><p><strong>GET</strong> <code>/comments/{article-id}</code></p>
+<p>开发者：王大锤</p>
+<p>最后更新时间：2018年8月10日</p>
+<p>标签：v 1.0</p>
+<p>接口说明：获取指定文章的所有评论</p>
+<p>使用帮助：默认返回20条数据，需要在请求头中设置身份标识（key）</p>
+<p>请求参数：</p>
+<p>| 参数名 | 类型   | 是否必填 | 参数位置 | 说明                          |<br>| —— | —— | ——– | ——– | ————————– |<br>| page   | 整数   | 否       | 查询参数 | 页码，默认值1                |<br>| size   | 整数   | 否       | 查询参数 | 每次获取评论数量（10~100），默认值20 |<br>| key    | 字符串 | 是       | 请求头   | 用户的身份标识               |</p>
+<p>响应信息：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"code"</span>: <span class="number">10000</span>,</span><br><span class="line">    <span class="attr">"message"</span>: <span class="string">"获取评论成功"</span>,</span><br><span class="line">    <span class="attr">"page"</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="attr">"size"</span>: <span class="number">10</span>,</span><br><span class="line">    <span class="attr">"totalPage"</span>: <span class="number">35</span>,</span><br><span class="line">    <span class="attr">"contents"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"userId"</span>: <span class="number">1700095</span>,</span><br><span class="line">            <span class="attr">"nickname"</span>: <span class="string">"王大锤"</span>,</span><br><span class="line">            <span class="attr">"pubDate"</span>: <span class="string">"2018年7月31日"</span>,</span><br><span class="line">            <span class="attr">"content"</span>: <span class="string">"小编是不是有病呀"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            "userId", 1995322,</span><br><span class="line">            "nickname": "白元芳",</span><br><span class="line">            "pubDate": "2018年8月2日",</span><br><span class="line">            "content": "楼上说得好"</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>POST</strong> <code>/comments/{article-id}</code></p>
+<p>开发者：王大锤</p>
+<p>最后更新时间：2018年8月10日</p>
+<p>标签：v 1.0</p>
+<p>接口说明：为指定的文章创建评论</p>
+<p>使用帮助：暂无</p>
+<p>请求参数：</p>
+<p>| 参数名  | 类型   | 是否必填 | 参数位置 | 说明       |<br>| ——- | —— | ——– | ——– | ———- |<br>| userId  | 字符串 | 是       | 消息体   | 用户ID     |<br>| key     | 字符串 | 是       | 请求头   | 用户的令牌 |<br>| content | 字符串 | 是       | 消息体   | 评论的内容 |</p>
+<p>响应信息：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"code"</span>: <span class="number">10001</span>,</span><br><span class="line">    <span class="attr">"message"</span>: <span class="string">"创建评论成功"</span>,</span><br><span class="line">    <span class="attr">"comment"</span>: &#123;</span><br><span class="line">        <span class="attr">"pubDate"</span>: <span class="string">"2018年7月31日"</span>,</span><br><span class="line">        <span class="attr">"content"</span>: <span class="string">"小编是不是有病呀"</span></span><br><span class="line">        /* ... */</span><br><span class="line">    &#125;</span><br><span class="line">    /* ... */</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    
+                    <li class="next">
+                        <a href="/2018/11/19/PEP 8风格指南/" data-toggle="tooltip" data-placement="top" title="PEP8代码风格指南">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+
+                
+
+
+                <!--加入新的评论系统-->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#网络API接口设计"><span class="toc-text">网络API接口设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#设计原则"><span class="toc-text">设计原则</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#关键问题"><span class="toc-text">关键问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#其他问题"><span class="toc-text">其他问题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文档撰写"><span class="toc-text">文档撰写</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#评论接口"><span class="toc-text">评论接口</span></a></li></ol></li></ol></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+
+                
+
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; 骆昊的技术专栏 2019
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://yoursite.com/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','','2.0.0');
+</script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="">
+</body>
+
+</html>
